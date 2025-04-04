@@ -35,6 +35,7 @@ int main(void)
     }
 }
 
+// NON-Interrupt subroutines
 // Función para mostrar el contador
 void cont_8bits()
 {
@@ -64,6 +65,7 @@ void setup()
 	sei();
 }
 
+// Interrupt routines
 // Interrupción de pinchange
 ISR(PCINT0_vect)
 {
