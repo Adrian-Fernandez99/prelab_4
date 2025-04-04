@@ -32,7 +32,7 @@ int main(void)
 void cont_8bits()
 {
 	PORTB = (PORTB & 0xF0) | (contador & 0x0F);
-	PORTC = (PORTC & 0xF0) | ((contador >> 4) & 0xF0);
+	PORTC = (PORTC & 0xF0) | ((contador >> 4) & 0x0F);
 }
 
 void setup()
