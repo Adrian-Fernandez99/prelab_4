@@ -5,9 +5,9 @@ IE2023 : Programación de Microcontroladores
 prelab_4.c
 
 Created: 4/4/2025 10:53:22 AM
-Author : adria
+Author : Adrián Fernández
 
-Descripcion: contador de 8 bits
+Descripción: contador de 8 bits
  */ 
 
 
@@ -15,7 +15,6 @@ Descripcion: contador de 8 bits
 #include <avr/interrupt.h>
 
 volatile uint8_t contador = 0;
-volatile uint8_t boton = 0;
 
 void setup();
 void cont_8bits();
@@ -33,37 +32,38 @@ int main(void)
 void cont_8bits()
 {
 	PORTB = (PORTB & 0xF0) | (contador & 0x0F);
-	PORTB = (PORTB & 0xF0) | (contador & 0xF0);
+	PORTC = (PORTC & 0xF0) | ((contador >> 4) & 0xF0);
 }
 
 void setup()
 {
 	cli();
 	
-	DDRD = 0xFF;
-	PORTD = 0x00;
+	// Se configuran puertos
+	DDRD |= 0xFF;		// Puerto D es salida
+	PORTD |= 0x00;
 	
-	DDRB &= ~((1 << PORTB4) | (1 << PORTB5));
+	DDRC |= 0xFF;		// Puerto C es salida
+	PORTC |= 0x00;
+	
+	DDRB |= 0x0F;		// La mitad del puerto B es salida y la otra entrada
 	PORTB |= ((1 << PORTB4) | (1 << PORTB5));
 	
-	PCMSK0 |= ~((1 << PORTB4) | (1 << PORTB5));
+	// Se configuran las interrupciones
+	PCMSK0 |= (1 << PORTB4) | (1 << PORTB5);
 	PCICR |= (1 << PCIE0);
-	
-	DDRD = 0x00;
-	PORTD = 0xFF;
 
 	sei();
 }
 
 ISR(PCINT0_vect)
 {
-	uint8_t boton = PINB & ((1 << PORTB4) | (1 << PORTB5));
 	
-	if (!(boton & (1 << PORTB4)))
+	if (!(PINB & (1 << PORTB4)))
 	{
 		contador++;
 	}
-	if (!(boton & (1 << PORTB5)))
+	if (!(PINB & (1 << PORTB5)))
 	{
 		contador--;
 	}
